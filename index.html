@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UAE → India Retirement Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #EAEDF1;
+  --panel: #FFFFFF;
+  --panel-2: #F5F7F9;
+  --ink: #16232D;
+  --ink-soft: #4B5B66;
+  --line: #DCE1E6;
+  --gold: #C08A2E;      /* UAE / current side */
+  --gold-soft: #F3E7D2;
+  --teal: #0E7C61;      /* India / retirement side */
+  --teal-soft: #DCEFE9;
+  --red: #B3403A;
+  --red-soft: #F6E0DE;
+  --blue: #2D5F8A;
+  --shadow: 0 1px 2px rgba(22,35,45,0.06), 0 8px 24px rgba(22,35,45,0.06);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Public Sans', sans-serif;
+  font-size:14.5px;
+  line-height:1.5;
+}
+h1,h2,h3{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  margin:0 0 4px 0;
+  letter-spacing:-0.01em;
+}
+.mono{ font-family:'IBM Plex Mono', monospace; }
+.wrap{ max-width:1180px; margin:0 auto; padding:22px 20px 60px; }
+
+/* HEADER */
+.hero{
+  display:flex; flex-wrap:wrap; gap:18px;
+  align-items:flex-end; justify-content:space-between;
+  padding:20px 24px; margin-bottom:18px;
+  background:linear-gradient(120deg, #16232D 0%, #223649 55%, #1E4D45 100%);
+  border-radius:16px; color:#F5F7F9;
+  box-shadow:var(--shadow);
+}
+.hero .eyebrow{
+  text-transform:uppercase; letter-spacing:0.12em; font-size:11px;
+  color:#C9D6DC; font-weight:600; margin-bottom:6px;
+}
+.hero h1{ color:#fff; font-size:26px; }
+.hero p{ color:#C9D6DC; margin:6px 0 0; max-width:520px; font-size:13px;}
+.route{
+  display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono',monospace;
+  font-size:13px; color:#fff; background:rgba(255,255,255,0.08);
+  padding:10px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.18);
+  white-space:nowrap;
+}
+.route .flag{ font-size:16px; }
+.route .arrow{ color:var(--gold); }
+
+/* LAYOUT */
+.grid{ display:grid; grid-template-columns: 400px 1fr; gap:18px; align-items:start; }
+@media (max-width:920px){ .grid{ grid-template-columns:1fr; } }
+
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  padding:18px 20px; box-shadow:var(--shadow); margin-bottom:16px;
+}
+.card h2{ font-size:15px; margin-bottom:2px; }
+.card .sub{ color:var(--ink-soft); font-size:12px; margin-bottom:12px; }
+
+/* FORM SECTIONS (details/summary) */
+details{ border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:var(--panel); overflow:hidden; }
+details[open]{ box-shadow:var(--shadow); }
+summary{
+  cursor:pointer; padding:13px 16px; font-family:'Fraunces',serif; font-weight:600;
+  font-size:14px; list-style:none; display:flex; align-items:center; justify-content:space-between;
+  background:var(--panel-2);
+}
+summary::-webkit-details-marker{ display:none; }
+summary .chev{ transition:transform .2s ease; color:var(--ink-soft); font-size:12px; }
+details[open] summary .chev{ transform:rotate(90deg); }
+.dbody{ padding:14px 16px 16px; }
+
+.field{ margin-bottom:12px; }
+.field label{ display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:5px; }
+.field .hint{ font-size:11px; color:#8798A3; margin-top:3px; }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+input[type=number], input[type=text], select{
+  width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--line);
+  font-family:'IBM Plex Mono', monospace; font-size:13px; background:#fff; color:var(--ink);
+}
+input:focus, select:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+.currency-affix{ position:relative; }
+.currency-affix span{
+  position:absolute; left:9px; top:9px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;
+}
+.currency-affix input{ padding-left:38px; }
+input[type=range]{ width:100%; accent-color:var(--teal); }
+
+/* RETIREMENT AGE TOGGLE */
+.toggle-row{ display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap;}
+.toggle-btn{
+  flex:1; min-width:90px; text-align:center; padding:10px 8px; border-radius:10px;
+  border:1.5px solid var(--line); background:#fff; cursor:pointer; font-weight:600; font-size:13px;
+  transition:all .15s ease; color:var(--ink-soft);
+}
+.toggle-btn.active{ border-color:var(--teal); background:var(--teal-soft); color:var(--teal); }
+.toggle-btn:hover{ border-color:var(--teal); }
+.toggle-btn small{ display:block; font-weight:400; font-size:10.5px; margin-top:2px; }
+
+/* RESULT CARDS */
+.stat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media (max-width:800px){ .stat-grid{ grid-template-columns:repeat(2,1fr);} }
+.stat{
+  background:var(--panel-2); border:1px solid var(--line); border-radius:12px; padding:14px;
+}
+.stat .lbl{ font-size:11px; color:var(--ink-soft); font-weight:600; text-transform:uppercase; letter-spacing:0.04em;}
+.stat .val{ font-family:'IBM Plex Mono',monospace; font-size:19px; font-weight:600; margin-top:5px; }
+.stat.good .val{ color:var(--teal); }
+.stat.bad .val{ color:var(--red); }
+.stat .sub{ font-size:11px; color:#8798A3; margin-top:3px;}
+
+.verdict{
+  border-radius:12px; padding:14px 16px; margin-top:12px; font-size:13.5px; display:flex; gap:10px; align-items:flex-start;
+}
+.verdict.good{ background:var(--teal-soft); border:1px solid #b9dccf; }
+.verdict.bad{ background:var(--red-soft); border:1px solid #e6c2be; }
+.verdict b{ font-family:'Fraunces',serif; }
+
+/* BUCKETS */
+.bucket-row{ display:flex; gap:22px; align-items:flex-end; justify-content:center; padding:18px 8px 6px; flex-wrap:wrap; }
+.bucket{ text-align:center; width:120px; }
+.jar{ position:relative; width:96px; height:150px; margin:0 auto 10px; }
+.jar svg{ position:absolute; inset:0; width:100%; height:100%; }
+.jar .fill{ position:absolute; left:8%; right:8%; bottom:9%; background:linear-gradient(180deg, var(--fillcolor-light), var(--fillcolor)); border-radius:0 0 14px 14px; transition:height .4s ease; }
+.bucket .name{ font-family:'Fraunces',serif; font-weight:600; font-size:13px; margin-top:2px; }
+.bucket .amt{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+.bucket .years{ font-size:10.5px; color:#8798A3; }
+
+/* GLIDE PATH */
+.glide-row{ display:flex; gap:10px; margin-top:6px; }
+.glide-band{ flex:1; border-radius:10px; padding:12px; border:1px solid var(--line); background:var(--panel-2); }
+.glide-band.current{ border-color:var(--blue); background:#EAF1F7; }
+.glide-band h4{ font-family:'Fraunces',serif; font-size:13px; margin:0 0 8px; }
+.bar-track{ height:10px; border-radius:6px; overflow:hidden; display:flex; background:#e5e9ec; margin-bottom:6px;}
+.bar-eq{ background:var(--teal); }
+.bar-debt{ background:var(--gold); }
+.legend{ display:flex; gap:12px; font-size:11px; color:var(--ink-soft); }
+.legend span{ display:inline-flex; align-items:center; gap:4px; }
+.dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+/* TIPS */
+.tips{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.tips li{ display:flex; gap:10px; padding:12px 14px; background:var(--panel-2); border:1px solid var(--line); border-radius:10px; font-size:13px;}
+.tips li .num{ font-family:'IBM Plex Mono',monospace; color:var(--teal); font-weight:600; flex-shrink:0; }
+
+.small-note{ font-size:11.5px; color:#8798A3; margin-top:10px; line-height:1.5;}
+.divider{ height:1px; background:var(--line); margin:14px 0; }
+.reset-btn{
+  font-size:12px; color:var(--ink-soft); background:none; border:1px solid var(--line); border-radius:8px;
+  padding:6px 12px; cursor:pointer; font-family:'Public Sans',sans-serif;
+}
+.reset-btn:hover{ border-color:var(--red); color:var(--red); }
+
+/* ONBOARDING TOUR */
+.tour-overlay{
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(15,22,28,0.55);
+  backdrop-filter:blur(1px);
+}
+.tour-ring{
+  position:absolute; border-radius:14px;
+  box-shadow:0 0 0 4px var(--blue), 0 0 0 9999px rgba(15,22,28,0.55);
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.tour-card{
+  position:absolute; width:320px; max-width:88vw;
+  background:#fff; border-radius:14px; padding:18px 20px;
+  box-shadow:0 12px 36px rgba(0,0,0,0.25);
+  transition:top .35s ease, left .35s ease;
+}
+.tour-progress{ height:4px; background:#E5E9EC; border-radius:3px; overflow:hidden; margin-bottom:12px;}
+.tour-progress-bar{ height:100%; background:var(--teal); width:10%; transition:width .3s ease;}
+.tour-stepnum{ font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--teal); margin-bottom:4px;}
+.tour-card h3{ font-size:16px; margin-bottom:8px; }
+.tour-card p{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:0; }
+.tour-actions{ display:flex; align-items:center; gap:8px; margin-top:16px; }
+.tour-btn{
+  font-family:'Public Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;
+  border-radius:8px; padding:8px 14px; border:1px solid var(--line); background:#fff; color:var(--ink);
+}
+.tour-btn-primary{ background:var(--teal); border-color:var(--teal); color:#fff; }
+.tour-btn-primary:hover{ background:#0a6650; }
+.tour-btn-ghost{ background:none; border:none; color:var(--ink-soft); padding:8px 6px; }
+.tour-btn-ghost:hover{ color:var(--ink); }
+@media (max-width:640px){
+  .tour-card{ position:fixed; left:50% !important; top:auto !important; bottom:16px !important; transform:translateX(-50%); }
+  .tour-ring{ display:none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Retirement Planner · Bucket Strategy Method</div>
+      <h1>UAE Earnings → India Retirement</h1>
+      <p>Enter your numbers below. The plan uses the freefincal-style approach: inflate today's expenses to retirement, size the required corpus with differential inflation for healthcare, then lay it out across three drawdown buckets.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+      <div class="route"><span class="flag">🇦🇪</span> AED income <span class="arrow">→</span> <span class="flag">🇮🇳</span> INR retirement</div>
+      <button id="tourRestartBtn" style="font-size:12px; background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:6px 12px; cursor:pointer; font-family:'Public Sans',sans-serif;">↻ Replay walkthrough</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- LEFT: INPUTS -->
+    <div>
+
+      <div class="card" id="tourRetireAge" style="padding:14px 16px;">
+        <h2 style="margin-bottom:8px;">Choose retirement age</h2>
+        <div class="toggle-row" id="ageToggle"></div>
+        <div class="small-note" id="ageNote"></div>
+      </div>
+
+      <details open id="tourPersonal">
+        <summary>Personal &amp; family <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="row2">
+            <div class="field"><label>Your current age</label><input type="number" id="curAge" value="0"></div>
+            <div class="field"><label>Spouse's current age</label><input type="number" id="spouseAge" value="0"></div>
+          </div>
+          <div class="field">
+            <label>Dependants (children / parents) still needing support</label>
+            <input type="number" id="numDependants" value="0">
+            <div class="hint">Used only as a reminder for term cover — expenses below should already include their costs.</div>
+          </div>
+        </div>
+      </details>
+
+      <details open id="tourIncome">
+        <summary>Current income &amp; savings (AED) <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="field"><label>Monthly gross salary</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="salary" value="0"></div>
+          </div>
+          <div class="field"><label>Monthly amount you can save/invest</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="monthlySave" value="0"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="field"><label>Bank balance / cash / FDs today</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="bankBal" value="0"></div>
+          </div>
+          <div class="field"><label>Stocks &amp; ETFs today (VOO, QQQ, SCHD, JEPI, CVX, NFLX, AMZN, BAC etc. — AED equivalent)</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="stocksVal" value="0"></div>
+          </div>
+          <div class="field"><label>Bonds / other fixed-income holdings today</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="bondsVal" value="0"></div>
+          </div>
+          <div class="field"><label>Other savings instruments (gratuity, EOSB accrual, gold, etc.)</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="otherVal" value="0"></div>
+          </div>
+        </div>
+      </details>
+
+      <details open id="tourExpenses">
+        <summary>Living expenses <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="field"><label>Current monthly household expense in UAE</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="uaeExpense" value="0"></div>
+          </div>
+          <div class="field"><label>Expected monthly expense once settled in India (today's value, ex-healthcare)</label>
+            <div class="currency-affix"><span>₹</span><input type="number" id="indiaExpense" value="0"></div>
+            <div class="hint">Default suggests ~55% of your UAE spend converted to INR — India is typically cheaper. Edit freely.</div>
+          </div>
+          <div class="field"><label>Monthly healthcare/medical out-of-pocket estimate for retirement (today's value, in India)</label>
+            <div class="currency-affix"><span>₹</span><input type="number" id="healthExpense" value="0"></div>
+            <div class="hint">Kept separate because healthcare costs typically inflate faster than general expenses.</div>
+          </div>
+          <div class="divider"></div>
+          <div class="field">
+            <label>Housing in India</label>
+            <div class="toggle-row" id="housingToggle" style="margin-bottom:8px;"></div>
+          </div>
+          <div class="field" id="homeCostField" style="display:none;">
+            <label>Estimated home cost, today's value (if buying later)</label>
+            <div class="currency-affix"><span>₹</span><input type="number" id="homeCost" value="0"></div>
+            <div class="hint">Added as a one-time outflow, inflated to your retirement date, on top of the monthly expense corpus above.</div>
+          </div>
+        </div>
+      </details>
+
+
+      <details id="tourInsurance">
+        <summary>Insurance <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="row2">
+            <div class="field"><label>Term insurance cover (existing)</label>
+              <div class="currency-affix"><span>AED</span><input type="number" id="termCover" value="0"></div>
+            </div>
+            <div class="field"><label>Annual term premium</label>
+              <div class="currency-affix"><span>AED</span><input type="number" id="termPremium" value="0"></div>
+            </div>
+          </div>
+          <div class="field"><label>Current annual medical/health insurance premium</label>
+            <div class="currency-affix"><span>AED</span><input type="number" id="medPremium" value="0"></div>
+          </div>
+          <div class="hint">On relocation to India, expat medical cover from your employer ends — the healthcare line above should reflect a standalone India health policy plus out-of-pocket costs.</div>
+        </div>
+      </details>
+
+      <details id="tourPassive">
+        <summary>Passive / other income in retirement <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="field"><label>Expected monthly passive income once retired (today's value — rent, dividends, bond coupons in India)</label>
+            <div class="currency-affix"><span>₹</span><input type="number" id="passiveIncome" value="0"></div>
+          </div>
+          <div class="field"><label>Post-60 knowledge / upskilling fund (today's value, one-time)</label>
+            <div class="currency-affix"><span>₹</span><input type="number" id="knowledgeFund" value="0"></div>
+            <div class="hint">A ring-fenced amount for courses, certifications, or a consulting setup after 60 — many retirees under-budget for staying intellectually active.</div>
+          </div>
+        </div>
+      </details>
+
+      <details id="tourAssumptions">
+        <summary>Assumptions <span class="chev">▶</span></summary>
+        <div class="dbody">
+          <div class="row2">
+            <div class="field"><label>General inflation (India)</label><div class="currency-affix"><span>%</span><input type="number" step="0.1" id="inflation" value="6.5"></div></div>
+            <div class="field"><label>Healthcare inflation</label><div class="currency-affix"><span>%</span><input type="number" step="0.1" id="healthInflation" value="9"></div></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Return while accumulating (pre-retirement)</label><div class="currency-affix"><span>%</span><input type="number" step="0.1" id="preReturn" value="10"></div></div>
+            <div class="field"><label>Return while drawing down (post-retirement, blended)</label><div class="currency-affix"><span>%</span><input type="number" step="0.1" id="postReturn" value="7.5"></div></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>AED → INR exchange rate</label><div class="currency-affix"><span>₹</span><input type="number" step="0.01" id="fxRate" value="23.30"></div></div>
+            <div class="field"><label>Life expectancy (plan till age)</label><input type="number" id="lifeExp" value="85"></div>
+          </div>
+        </div>
+      </details>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;" id="tourClear">
+        <button class="reset-btn" id="resetBtn">Reset assumptions to defaults</button>
+        <button class="reset-btn" id="clearBtn" style="border-color:var(--red); color:var(--red);">Clear personal values to 0</button>
+      </div>
+      <div class="small-note" style="margin-top:8px;">All personal fields default to <b>0</b> in this file — nobody's numbers are baked in. Fill in your own figures to use it; click <b>"Clear personal values to 0"</b> twice (it needs a second click to confirm) any time before saving/sharing to wipe what you've entered back to 0.</div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div>
+      <div class="card" id="tourResults">
+        <h2>Where you stand</h2>
+        <div class="sub" id="yearsToRetLine">—</div>
+        <div class="stat-grid" id="statGrid"></div>
+        <div id="verdictBox"></div>
+      </div>
+
+      <div class="card" id="tourBuckets">
+        <h2>Retirement drawdown buckets</h2>
+        <div class="sub">How your required corpus is laid out on day one of retirement, freefincal-style — refilled from Bucket 3 into 1 &amp; 2 every couple of years.</div>
+        <div class="bucket-row" id="bucketRow"></div>
+      </div>
+
+      <div class="card" id="tourGlide">
+        <h2>Accumulation glide path by age band</h2>
+        <div class="sub">Suggested equity : debt mix while you're still saving, tapering as retirement nears. Your current age band is highlighted.</div>
+        <div class="glide-row" id="glideRow"></div>
+      </div>
+
+      <div class="card" id="tourTips">
+        <h2>Retirement tips for your situation</h2>
+        <ul class="tips" id="tipsList"></ul>
+      </div>
+
+      <div class="small-note">
+        This is a planning aid using standard retirement-corpus and bucket-strategy mechanics (inspired by the freefincal robo-advisor approach) — not personalised financial advice. Assumptions (returns, inflation, FX) are editable estimates; actual outcomes will vary. Consider a SEBI-registered fee-only planner for a formal plan.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING TOUR -->
+<div id="tourOverlay" class="tour-overlay" style="display:none;">
+  <div id="tourSpotlightRing" class="tour-ring"></div>
+  <div id="tourCard" class="tour-card">
+    <div class="tour-progress"><div id="tourProgressBar" class="tour-progress-bar"></div></div>
+    <div class="tour-stepnum" id="tourStepNum">Step 1 of 10</div>
+    <h3 id="tourTitle">Welcome</h3>
+    <p id="tourBody">…</p>
+    <div class="tour-actions">
+      <button id="tourSkipBtn" class="tour-btn tour-btn-ghost">Skip tour</button>
+      <div style="flex:1;"></div>
+      <button id="tourBackBtn" class="tour-btn tour-btn-ghost">Back</button>
+      <button id="tourNextBtn" class="tour-btn tour-btn-primary">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const $=id=>document.getElementById(id);
+const inputIds=['curAge','spouseAge','numDependants','salary','monthlySave','bankBal','stocksVal','bondsVal','otherVal',
+'uaeExpense','indiaExpense','healthExpense','homeCost','termCover','termPremium','medPremium','passiveIncome','knowledgeFund',
+'inflation','healthInflation','preReturn','postReturn','fxRate','lifeExp'];
+
+const defaults={curAge:0,spouseAge:0,numDependants:0,salary:0,monthlySave:0,bankBal:0,stocksVal:0,
+bondsVal:0,otherVal:0,uaeExpense:0,indiaExpense:0,healthExpense:0,homeCost:0,termCover:0,termPremium:0,
+medPremium:0,passiveIncome:0,knowledgeFund:0,inflation:6.5,healthInflation:9,preReturn:10,postReturn:7.5,
+fxRate:23.30,lifeExp:85};
+
+let retireAge = 55;
+let housingStatus = 'own'; // 'own' or 'buy'
+const housingOptions=[
+  {v:'own', label:'Already own', note:'no housing cost'},
+  {v:'buy', label:'Plan to buy', note:'add a lump sum'}
+];
+const retireOptions=[
+  {age:50, label:'Age 50', note:'Early exit'},
+  {age:55, label:'Age 55', note:'Standard'},
+  {age:60, label:'Age 60', note:'Extended'}
+];
+
+function fmtINR(n){
+  n=Math.round(n);
+  const neg = n<0; n=Math.abs(n);
+  let s=n.toString();
+  let last3=s.slice(-3), rest=s.slice(0,-3);
+  if(rest!=='') last3=','+last3;
+  let formatted=rest.replace(/\B(?=(\d{2})+(?!\d))/g,',')+last3;
+  return (neg?'-₹':'₹')+formatted;
+}
+function fmtAED(n){
+  n=Math.round(n);
+  return 'AED '+n.toLocaleString('en-US');
+}
+function fmtCr(n){
+  // show in lakhs/crore for big numbers
+  if(Math.abs(n)>=1e7) return (n/1e7).toFixed(2)+' Cr';
+  if(Math.abs(n)>=1e5) return (n/1e5).toFixed(1)+' L';
+  return fmtINR(n);
+}
+
+function pvGrowingSeries(P0,n,r,g){
+  if(n<=0) return 0;
+  const ratio=(1+g)/(1+r);
+  if(Math.abs(r-g)<1e-9) return P0*n;
+  return P0*(1-Math.pow(ratio,n))/(1-ratio);
+}
+function fvLump(pv,r,years){ return pv*Math.pow(1+r,years); }
+function fvMonthlyAnnuity(pmt,annualRate,years){
+  const i=Math.pow(1+annualRate,1/12)-1;
+  const N=years*12;
+  if(i===0) return pmt*N;
+  return pmt*((Math.pow(1+i,N)-1)/i);
+}
+function requiredMonthlySIP(gap,annualRate,years){
+  const i=Math.pow(1+annualRate,1/12)-1;
+  const N=years*12;
+  if(N<=0) return gap;
+  if(i===0) return gap/N;
+  return gap*i/(Math.pow(1+i,N)-1);
+}
+
+function getState(){
+  const s={};
+  inputIds.forEach(id=>{ s[id]=parseFloat($(id).value)||0; });
+  s.retireAge=retireAge;
+  s.housingStatus=housingStatus;
+  s.inflation/=100; s.healthInflation/=100; s.preReturn/=100; s.postReturn/=100;
+  return s;
+}
+
+function calculate(s){
+  const yearsToRetire=Math.max(0, s.retireAge - s.curAge);
+  const retireYears=Math.max(1, s.lifeExp - s.retireAge);
+
+  // --- future expense streams (in INR) ---
+  const generalAnnualToday = s.indiaExpense*12;
+  const healthAnnualToday = s.healthExpense*12;
+  const generalAnnualAtRetire = generalAnnualToday*Math.pow(1+s.inflation, yearsToRetire);
+  const healthAnnualAtRetire = healthAnnualToday*Math.pow(1+s.healthInflation, yearsToRetire);
+  const passiveAnnualAtRetire = (s.passiveIncome*12)*Math.pow(1+s.inflation, yearsToRetire);
+
+  // --- required corpus (PV at retirement date) ---
+  const pvGeneral = pvGrowingSeries(generalAnnualAtRetire, retireYears, s.postReturn, s.inflation);
+  const pvHealth = pvGrowingSeries(healthAnnualAtRetire, retireYears, s.postReturn, s.healthInflation);
+  const pvPassive = pvGrowingSeries(passiveAnnualAtRetire, retireYears, s.postReturn, s.inflation);
+  const knowledgeFundFV = s.knowledgeFund*Math.pow(1+s.inflation, Math.max(0,60-s.curAge>yearsToRetire?60-s.curAge:yearsToRetire));
+  const homeCostFV = s.housingStatus==='buy' ? s.homeCost*Math.pow(1+s.inflation, yearsToRetire) : 0;
+  const requiredCorpus = Math.max(0, pvGeneral + pvHealth - pvPassive) + knowledgeFundFV + homeCostFV;
+
+  // --- projected corpus ---
+  const currentInvestINR = (s.bankBal + s.stocksVal + s.bondsVal + s.otherVal) * s.fxRate;
+  const fvCurrentInvest = fvLump(currentInvestINR, s.preReturn, yearsToRetire);
+  const monthlySaveINR = s.monthlySave * s.fxRate;
+  const fvSavings = fvMonthlyAnnuity(monthlySaveINR, s.preReturn, yearsToRetire);
+  const projectedCorpus = fvCurrentInvest + fvSavings;
+
+  const gap = projectedCorpus - requiredCorpus;
+  const additionalMonthlySIP_AED = gap<0 ? requiredMonthlySIP(-gap, s.preReturn, yearsToRetire)/s.fxRate : 0;
+
+  // sustainable monthly spend the projected corpus can support (today's terms)
+  const spendableCorpusForGeneral = Math.max(0, projectedCorpus - pvHealth + pvPassive - knowledgeFundFV - homeCostFV);
+  const ratio=(1+s.inflation)/(1+s.postReturn);
+  let P0_sustainable;
+  if(Math.abs(s.postReturn-s.inflation)<1e-9){ P0_sustainable = spendableCorpusForGeneral/retireYears; }
+  else{ P0_sustainable = spendableCorpusForGeneral*(1-ratio)/(1-Math.pow(ratio,retireYears)); }
+  const sustainableMonthlyAtRetireINR = Math.max(0,P0_sustainable)/12;
+  const sustainableMonthlyTodayINR = sustainableMonthlyAtRetireINR/Math.pow(1+s.inflation,yearsToRetire);
+
+  // --- buckets (freefincal-style: 1-3yrs liquid, 4-7yrs medium debt, 8+ equity) ---
+  const b1Years=Math.min(3,retireYears), b2Years=Math.min(4,Math.max(0,retireYears-3)), b3Years=Math.max(0,retireYears-7);
+  let b1=0,cursor=generalAnnualAtRetire+healthAnnualAtRetire-passiveAnnualAtRetire;
+  // approximate each bucket's PV using its own conservative return assumption
+  function bucketPV(annualStart,years,ret,infl){ return pvGrowingSeries(Math.max(0,annualStart),years,ret,infl); }
+  const netAnnualAtRetire = Math.max(0, generalAnnualAtRetire+healthAnnualAtRetire-passiveAnnualAtRetire);
+  const bucket1 = bucketPV(netAnnualAtRetire, b1Years, 0.055, s.inflation);
+  const yr4Annual = netAnnualAtRetire*Math.pow(1+s.inflation,3);
+  const bucket2 = bucketPV(yr4Annual, b2Years, 0.075, s.inflation);
+  const bucket3 = Math.max(0, requiredCorpus - bucket1 - bucket2);
+
+  return {yearsToRetire, retireYears, requiredCorpus, projectedCorpus, gap, additionalMonthlySIP_AED,
+    sustainableMonthlyTodayINR, sustainableMonthlyAtRetireINR, currentInvestINR, fvCurrentInvest, fvSavings,
+    generalAnnualAtRetire, healthAnnualAtRetire, passiveAnnualAtRetire, knowledgeFundFV, homeCostFV,
+    bucket1, bucket2, bucket3, b1Years, b2Years, b3Years:retireYears-b1Years-b2Years};
+}
+
+function renderAgeToggle(){
+  const wrap=$('ageToggle'); wrap.innerHTML='';
+  retireOptions.forEach(o=>{
+    const b=document.createElement('div');
+    b.className='toggle-btn'+(o.age===retireAge?' active':'');
+    b.innerHTML=o.label+'<small>'+o.note+'</small>';
+    b.onclick=()=>{ retireAge=o.age; renderAgeToggle(); renderAll(); };
+    wrap.appendChild(b);
+  });
+}
+
+function renderHousingToggle(){
+  const wrap=$('housingToggle'); wrap.innerHTML='';
+  housingOptions.forEach(o=>{
+    const b=document.createElement('div');
+    b.className='toggle-btn'+(o.v===housingStatus?' active':'');
+    b.innerHTML=o.label+'<small>'+o.note+'</small>';
+    b.onclick=()=>{ housingStatus=o.v; renderHousingToggle(); $('homeCostField').style.display = housingStatus==='buy'?'block':'none'; renderAll(); };
+    wrap.appendChild(b);
+  });
+  $('homeCostField').style.display = housingStatus==='buy'?'block':'none';
+}
+
+function renderAll(){
+  const s=getState();
+  const r=calculate(s);
+
+  $('ageNote').textContent = 'Retiring at '+s.retireAge+' → '+r.yearsToRetire+' years to build the corpus, '+r.retireYears+' years to fund in retirement (to age '+Math.round(s.lifeExp)+').';
+  $('yearsToRetLine').textContent = r.yearsToRetire+' years of runway left · planning for '+r.retireYears+' years of retirement';
+
+  const statGrid=$('statGrid');
+  const gapGood=r.gap>=0;
+  statGrid.innerHTML=`
+    <div class="stat"><div class="lbl">Required corpus</div><div class="val">${fmtCr(r.requiredCorpus)}</div><div class="sub">at age ${s.retireAge}, incl. healthcare &amp; upskilling fund</div></div>
+    <div class="stat"><div class="lbl">Projected corpus</div><div class="val">${fmtCr(r.projectedCorpus)}</div><div class="sub">current holdings + ongoing monthly saving</div></div>
+    <div class="stat ${gapGood?'good':'bad'}"><div class="lbl">${gapGood?'Surplus':'Shortfall'}</div><div class="val">${fmtCr(Math.abs(r.gap))}</div><div class="sub">${gapGood?'ahead of target':'below target at this savings rate'}</div></div>
+    <div class="stat good"><div class="lbl">Sustainable spend</div><div class="val">${fmtCr(r.sustainableMonthlyTodayINR)}/mo</div><div class="sub">in today's ₹ terms, from projected corpus</div></div>
+  `;
+
+  const vbox=$('verdictBox');
+  if(gapGood){
+    vbox.innerHTML=`<div class="verdict good">💡 <div><b>On track at age ${s.retireAge}.</b> Your projected corpus covers your required corpus with a surplus of ${fmtCr(r.gap)}. You could sustain roughly <b>${fmtCr(r.sustainableMonthlyTodayINR)}/month</b> (today's value) in India — above your stated target of ₹${Math.round(s.indiaExpense).toLocaleString('en-IN')}/month.</div></div>`;
+  } else {
+    vbox.innerHTML=`<div class="verdict bad">⚠️ <div><b>Shortfall of ${fmtCr(Math.abs(r.gap))} at age ${s.retireAge}.</b> At your current savings rate, sustainable spend would only be about <b>${fmtCr(r.sustainableMonthlyTodayINR)}/month</b>. To close the gap, increase monthly savings by roughly <b>${fmtAED(r.additionalMonthlySIP_AED)}</b>, or consider a later retirement age using the toggle above.</div></div>`;
+  }
+
+  // buckets
+  const maxB=Math.max(r.bucket1,r.bucket2,r.bucket3,1);
+  const bucketRow=$('bucketRow');
+  const bdata=[
+    {name:'Bucket 1',sub:'Liquid / short debt',years:r.b1Years,amt:r.bucket1,color:'#2D8FBF',light:'#8FCBE8'},
+    {name:'Bucket 2',sub:'Medium debt / hybrid',years:r.b2Years,amt:r.bucket2,color:'#C08A2E',light:'#EBC988'},
+    {name:'Bucket 3',sub:'Equity / growth',years:Math.max(0,r.b3Years),amt:r.bucket3,color:'#0E7C61',light:'#7FC9B4'}
+  ];
+  bucketRow.innerHTML=bdata.map(b=>{
+    const pct=Math.max(6,Math.round((b.amt/maxB)*100));
+    return `<div class="bucket">
+      <div class="jar">
+        <svg viewBox="0 0 96 150"><path d="M20 8 H76 V20 L86 34 V138 Q86 146 78 146 H18 Q10 146 10 138 V34 L20 20 Z" fill="none" stroke="#B9C2C9" stroke-width="3"/></svg>
+        <div class="fill" style="height:${pct}%; --fillcolor:${b.color}; --fillcolor-light:${b.light};"></div>
+      </div>
+      <div class="name">${b.name}</div>
+      <div class="years">${b.sub}</div>
+      <div class="amt">${fmtCr(b.amt)}</div>
+      <div class="years">~${b.years.toFixed(1)} yrs</div>
+    </div>`;
+  }).join('');
+
+  // glide path
+  const bands=[
+    {label:'Age 40–50', eq:70, cur: s.curAge>=40&&s.curAge<50},
+    {label:'Age 50–60', eq:55, cur: s.curAge>=50&&s.curAge<60},
+    {label:'Age 60+', eq:35, cur: s.curAge>=60}
+  ];
+  $('glideRow').innerHTML=bands.map(b=>`
+    <div class="glide-band ${b.cur?'current':''}">
+      <h4>${b.label}${b.cur?' · you are here':''}</h4>
+      <div class="bar-track"><div class="bar-eq" style="width:${b.eq}%"></div><div class="bar-debt" style="width:${100-b.eq}%"></div></div>
+      <div class="legend"><span><i class="dot" style="background:var(--teal)"></i>Equity ${b.eq}%</span><span><i class="dot" style="background:var(--gold)"></i>Debt ${100-b.eq}%</span></div>
+    </div>`).join('');
+
+  // tips
+  const tips=[];
+  tips.push('Rebuild Bucket 1 every 1–2 years by trimming gains from Bucket 3, rather than selling equity in a downturn — this is the core discipline behind the bucket strategy.');
+  if(s.housingStatus==='buy') tips.push('Home purchase is budgeted as a one-time '+fmtCr(r.homeCostFV)+' outflow at retirement (today\'s '+fmtCr(s.homeCost)+' inflated at your general inflation rate) — consider buying a few years before you retire instead, so a property downturn near retirement date doesn\'t force a bad-timing sale of other assets.');
+  if(s.retireAge<=50) tips.push('Retiring at 50 means a longer, ~'+r.retireYears+'-year drawdown with no employer medical cover for over three decades — keep Bucket 1+2 large enough (5–7 years) and stress-test with a lower post-retirement return, e.g. 6%.');
+  tips.push('Buy a standalone India health policy (with restore/top-up) before repatriating — insurers load premiums heavily for age and pre-existing conditions if you wait until your 50s or 60s.');
+  tips.push('Keep the post-60 knowledge/upskilling fund (₹'+Math.round(s.knowledgeFund).toLocaleString('en-IN')+' today\'s value) separate from your spending corpus — courses, certifications, or advisory/consulting setup costs are easy to underfund.');
+  tips.push('Review your term cover: at '+fmtAED(s.termCover)+' against '+r.yearsToRetire+' years of expenses still to fund, check it still clears any outstanding liabilities plus dependants\' near-term costs — increase before age loads the premium.');
+  tips.push('AED-to-INR is a real risk over a multi-decade horizon — consider holding part of the India corpus in dollar or gold-linked assets as a currency hedge rather than 100% INR.');
+  tips.push('Revisit this plan yearly: update the FX rate, actual salary growth, and portfolio value, and nudge the retirement-age toggle to see how a 5-year delay changes the required corpus.');
+  $('tipsList').innerHTML=tips.map((t,i)=>`<li><span class="num">${String(i+1).padStart(2,'0')}</span><span>${t}</span></li>`).join('');
+}
+
+const personalIds=['curAge','spouseAge','numDependants','salary','monthlySave','bankBal','stocksVal','bondsVal','otherVal',
+'uaeExpense','indiaExpense','healthExpense','homeCost','termCover','termPremium','medPremium','passiveIncome','knowledgeFund'];
+const assumptionIds=['inflation','healthInflation','preReturn','postReturn','fxRate','lifeExp'];
+
+function bindInputs(){
+  inputIds.forEach(id=>{ $(id).addEventListener('input', renderAll); });
+  $('resetBtn').addEventListener('click', ()=>{
+    assumptionIds.forEach(id=>{ $(id).value=defaults[id]; });
+    renderAll();
+  });
+  let clearArmed=false, clearTimer=null;
+  const clearBtnEl=$('clearBtn');
+  const clearBtnDefaultLabel=clearBtnEl.textContent;
+  clearBtnEl.addEventListener('click', ()=>{
+    if(!clearArmed){
+      clearArmed=true;
+      clearBtnEl.textContent='Click again to confirm clear';
+      clearBtnEl.style.background='var(--red)';
+      clearBtnEl.style.color='#fff';
+      clearTimer=setTimeout(()=>{
+        clearArmed=false;
+        clearBtnEl.textContent=clearBtnDefaultLabel;
+        clearBtnEl.style.background='';
+        clearBtnEl.style.color='var(--red)';
+      },4000);
+      return;
+    }
+    clearTimeout(clearTimer);
+    clearArmed=false;
+    clearBtnEl.textContent=clearBtnDefaultLabel;
+    clearBtnEl.style.background='';
+    clearBtnEl.style.color='var(--red)';
+    personalIds.forEach(id=>{ $(id).value=0; });
+    retireAge=55; housingStatus='own'; renderAgeToggle(); renderHousingToggle(); renderAll();
+    const note=document.createElement('div');
+    note.textContent='All personal figures reset to 0 — safe to save/share now.';
+    note.style.cssText='margin-top:8px;font-size:12px;font-weight:600;color:var(--teal);';
+    clearBtnEl.parentElement.parentElement.appendChild(note);
+    setTimeout(()=>note.remove(),4000);
+  });
+}
+
+renderAgeToggle();
+renderHousingToggle();
+bindInputs();
+renderAll();
+
+/* ---------- ONBOARDING TOUR ---------- */
+const TOUR_KEY='retPlanner_tourDone_v1';
+let tourIndex=0;
+const tourSteps=[
+  {target:null, title:'Welcome to your retirement planner', body:"This tool sizes the corpus you need to retire from the UAE and settle in India, then splits it into three drawdown buckets — the same core logic used by freefincal's robo-advisor. Let's walk through the sections. Click Next to continue, or Skip tour any time."},
+  {target:'tourRetireAge', title:'1. Choose your retirement age', body:'Start here — pick 50, 55, or 60. Every result on the right recalculates instantly for whichever age you choose.'},
+  {target:'tourPersonal', title:'2. Personal & family', body:"Enter your current age and your spouse's age. This drives how many years you have left to save, and how many years the corpus needs to last."},
+  {target:'tourIncome', title:'3. Income & current savings', body:'Your monthly salary, how much you can save each month, and everything you already hold — bank balance, stocks, bonds, and other savings — all in AED.'},
+  {target:'tourExpenses', title:'4. Living expenses', body:'Your current UAE spend, your expected India spend once retired, healthcare (kept separate since it inflates faster), and whether you already own a home in India or plan to buy one later.'},
+  {target:'tourInsurance', title:'5. Insurance', body:"Your existing term cover and premiums, plus current medical insurance — used in the tips section's cover-adequacy check."},
+  {target:'tourPassive', title:'6. Passive income & knowledge fund', body:'Any rent, dividends, or other income you expect once retired, plus a ring-fenced fund for courses or upskilling after 60.'},
+  {target:'tourAssumptions', title:'7. Assumptions', body:'Inflation, expected returns, the AED-to-INR rate, and life expectancy. Sensible defaults are pre-filled — edit them if you want to stress-test the plan.'},
+  {target:'tourResults', title:'8. Where you stand', body:"The headline numbers: the corpus you'll need, what you're projected to have, and whether that's a surplus or a shortfall — plus a plain-English verdict."},
+  {target:'tourBuckets', title:'9. Drawdown buckets', body:'Your required corpus split into three buckets — liquid funds for the first few years, medium-term debt next, and equity for the long stretch — refilled periodically, the freefincal way.'},
+  {target:'tourGlide', title:'10. Glide path', body:"How your equity-to-debt mix should shift by age band while you're still saving. Your current age band is highlighted automatically."},
+  {target:'tourTips', title:'11. Tips for your situation', body:'Personalised pointers based on the numbers you entered — bucket refilling, health insurance timing, term cover, currency risk, and more.'},
+  {target:'tourClear', title:'12. Before you share this file', body:'Planning to send this calculator to someone else? Click "Clear personal values to 0" first — it wipes everything you entered so they start from a blank sheet. You\'re all set — happy planning!'}
+];
+
+function positionRingAndCard(el){
+  const ring=$('tourSpotlightRing'), card=$('tourCard');
+  if(!el){
+    ring.style.display='none';
+    card.style.top=Math.max(16,(window.innerHeight/2-130))+'px';
+    card.style.left=Math.max(16,(window.innerWidth/2-160))+'px';
+    return;
+  }
+  ring.style.display='block';
+  const r=el.getBoundingClientRect(), pad=6;
+  ring.style.top=(r.top-pad)+'px';
+  ring.style.left=(r.left-pad)+'px';
+  ring.style.width=(r.width+pad*2)+'px';
+  ring.style.height=(r.height+pad*2)+'px';
+
+  const cardWidth=320, approxCardHeight=250;
+  let cardLeft=r.left, cardTop=r.bottom+14;
+  if(cardLeft+cardWidth>window.innerWidth-16) cardLeft=window.innerWidth-cardWidth-16;
+  if(cardLeft<16) cardLeft=16;
+  if(r.bottom+approxCardHeight>window.innerHeight){
+    cardTop=r.top-14-approxCardHeight;
+    if(cardTop<16) cardTop=16;
+  }
+  card.style.top=cardTop+'px';
+  card.style.left=cardLeft+'px';
+}
+
+function showTourStep(idx){
+  tourIndex=idx;
+  const step=tourSteps[idx];
+  $('tourStepNum').textContent='Step '+(idx+1)+' of '+tourSteps.length;
+  $('tourProgressBar').style.width=Math.round(((idx+1)/tourSteps.length)*100)+'%';
+  $('tourTitle').textContent=step.title;
+  $('tourBody').textContent=step.body;
+  $('tourBackBtn').style.visibility=idx===0?'hidden':'visible';
+  $('tourNextBtn').textContent=idx===tourSteps.length-1?'Finish':'Next';
+
+  if(step.target){
+    const el=document.getElementById(step.target);
+    if(el){
+      if(el.tagName==='DETAILS') el.open=true;
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(()=>positionRingAndCard(el),380);
+    }
+  } else {
+    positionRingAndCard(null);
+  }
+}
+
+function endTour(){
+  $('tourOverlay').style.display='none';
+  try{ localStorage.setItem(TOUR_KEY,'1'); }catch(e){}
+}
+
+function startTour(){
+  $('tourOverlay').style.display='block';
+  showTourStep(0);
+}
+
+$('tourNextBtn').addEventListener('click', ()=>{
+  if(tourIndex<tourSteps.length-1) showTourStep(tourIndex+1); else endTour();
+});
+$('tourBackBtn').addEventListener('click', ()=>{ if(tourIndex>0) showTourStep(tourIndex-1); });
+$('tourSkipBtn').addEventListener('click', endTour);
+$('tourRestartBtn').addEventListener('click', startTour);
+window.addEventListener('resize', ()=>{
+  if($('tourOverlay').style.display==='block'){
+    const step=tourSteps[tourIndex];
+    positionRingAndCard(step.target?document.getElementById(step.target):null);
+  }
+});
+
+// Auto-show once per device/browser (localStorage is device/browser-local, not account-based)
+(function(){
+  let seen=false;
+  try{ seen=localStorage.getItem(TOUR_KEY)==='1'; }catch(e){}
+  if(!seen) setTimeout(startTour,600);
+})();
+</script>
+</body>
+</html>
